@@ -64,7 +64,7 @@ The AI-Driven Career Recommendation Platform is a web application designed to he
 - Week 7: Final report writing and documentation.
 
 ## Links
-- GitHub Repo: 
+- GitHub Repo: https://github.com/nawalali1/career-recommendation-platfrom.git
 
 
 ## Contributors
