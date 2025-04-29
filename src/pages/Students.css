@@ -1,0 +1,71 @@
+.students-page {
+    max-width: 900px;
+    margin: 100px auto;
+    padding: 3rem 2rem;
+    background-color: #fff;
+    border-radius: 16px;
+    box-shadow: 0 18px 48px rgba(0, 0, 0, 0.04);
+    font-family: 'Inter', sans-serif;
+    text-align: center;
+  }
+  
+  .students-page h2 {
+    font-size: 2.2rem;
+    color: #3f51b5;
+    margin-bottom: 1rem;
+  }
+  
+  .intro-text {
+    color: #4b5563;
+    font-size: 1.05rem;
+    margin-bottom: 2.5rem;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .students-options {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 2rem;
+  }
+  
+  .option-card {
+    background-color: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 2rem;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.03);
+    text-align: left;
+  }
+  
+  .option-card h3 {
+    font-size: 1.3rem;
+    margin-bottom: 0.75rem;
+    color: #111827;
+  }
+  
+  .option-card p {
+    color: #4b5563;
+    font-size: 1rem;
+    margin-bottom: 1.25rem;
+  }
+  
+  .option-card button {
+    background-color: #3f51b5;
+    color: white;
+    font-weight: 600;
+    padding: 0.7rem 1.4rem;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .option-card button:hover {
+    background-color: #2c3fa0;
+  }
+  
