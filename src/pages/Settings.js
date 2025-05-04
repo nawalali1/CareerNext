@@ -1,6 +1,5 @@
 // src/pages/Settings.js
 import React, { useState, useEffect } from 'react';
-import Navbar from '../components/Navbar';
 import { auth } from '../firebase';
 import {
   updateProfile,
@@ -11,36 +10,24 @@ import {
 } from 'firebase/auth';
 import './Settings.css';
 
-const TABS = ['Profile','Security','Notifications','Preferences','Privacy'];
+const TABS = ['Profile', 'Security', 'Notifications', 'Preferences', 'Privacy'];
 
 export default function Settings() {
   const user = auth.currentUser;
 
-  // Tab state
   const [activeTab, setActiveTab] = useState('Profile');
-
-  // PROFILE
   const [displayName, setDisplayName] = useState(user?.displayName || '');
   const [profileMsg, setProfileMsg] = useState('');
-
-  // SECURITY
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [securityMsg, setSecurityMsg] = useState('');
-
-  // NOTIFICATIONS
   const [jobAlerts, setJobAlerts] = useState(false);
   const [weeklySummary, setWeeklySummary] = useState(false);
-
-  // PREFERENCES
   const [language, setLanguage] = useState('en');
-  const [country, setCountry]   = useState('gb');
-  const [prefMsg, setPrefMsg]   = useState('');
-
-  // PRIVACY
+  const [country, setCountry] = useState('gb');
+  const [prefMsg, setPrefMsg] = useState('');
   const [deleteMsg, setDeleteMsg] = useState('');
 
-  // Load prefs once
   useEffect(() => {
     setJobAlerts(JSON.parse(localStorage.getItem('jobAlerts')) || false);
     setWeeklySummary(JSON.parse(localStorage.getItem('weeklySummary')) || false);
@@ -48,7 +35,6 @@ export default function Settings() {
     setCountry(localStorage.getItem('country') || 'gb');
   }, []);
 
-  // Handlers
   const saveProfile = async () => {
     setProfileMsg('');
     try {
@@ -94,119 +80,116 @@ export default function Settings() {
   };
 
   return (
-    <>
-      <Navbar />
-      <div className="settings-container">
-        <nav className="settings-nav">
-          <ul>
-            {TABS.map(tab => (
-              <li
-                key={tab}
-                className={activeTab === tab ? 'active' : ''}
-                onClick={() => setActiveTab(tab)}
-              >
-                {tab}
-              </li>
-            ))}
-          </ul>
-        </nav>
+    <div className="settings-container">
+      <nav className="settings-nav">
+        <ul>
+          {TABS.map(tab => (
+            <li
+              key={tab}
+              className={activeTab === tab ? 'active' : ''}
+              onClick={() => setActiveTab(tab)}
+            >
+              {tab}
+            </li>
+          ))}
+        </ul>
+      </nav>
 
-        <main className="settings-main">
-          {activeTab === 'Profile' && (
-            <section className="settings-card">
-              <h2>Profile</h2>
-              <label>Display Name</label>
+      <main className="settings-main">
+        {activeTab === 'Profile' && (
+          <section className="settings-card">
+            <h2>Profile</h2>
+            <label>Display Name</label>
+            <input
+              type="text"
+              value={displayName}
+              onChange={e => setDisplayName(e.target.value)}
+            />
+            <button onClick={saveProfile}>Save Profile</button>
+            {profileMsg && <div className="settings-message">{profileMsg}</div>}
+          </section>
+        )}
+
+        {activeTab === 'Security' && (
+          <section className="settings-card">
+            <h2>Account Security</h2>
+            <label>Current Password</label>
+            <input
+              type="password"
+              value={currentPassword}
+              onChange={e => setCurrentPassword(e.target.value)}
+            />
+            <label>New Password</label>
+            <input
+              type="password"
+              value={newPassword}
+              onChange={e => setNewPassword(e.target.value)}
+            />
+            <button onClick={changePassword}>Change Password</button>
+            {securityMsg && <div className="settings-message">{securityMsg}</div>}
+          </section>
+        )}
+
+        {activeTab === 'Notifications' && (
+          <section className="settings-card">
+            <h2>Email Notifications</h2>
+            <div className="toggle-row">
+              <span>Job Alerts</span>
               <input
-                type="text"
-                value={displayName}
-                onChange={e => setDisplayName(e.target.value)}
+                type="checkbox"
+                checked={jobAlerts}
+                onChange={e => toggleNotification('jobAlerts', e.target.checked)}
               />
-              <button onClick={saveProfile}>Save Profile</button>
-              {profileMsg && <div className="settings-message">{profileMsg}</div>}
-            </section>
-          )}
-
-          {activeTab === 'Security' && (
-            <section className="settings-card">
-              <h2>Account Security</h2>
-              <label>Current Password</label>
+            </div>
+            <div className="toggle-row">
+              <span>Weekly Summary</span>
               <input
-                type="password"
-                value={currentPassword}
-                onChange={e => setCurrentPassword(e.target.value)}
+                type="checkbox"
+                checked={weeklySummary}
+                onChange={e => toggleNotification('weeklySummary', e.target.checked)}
               />
-              <label>New Password</label>
-              <input
-                type="password"
-                value={newPassword}
-                onChange={e => setNewPassword(e.target.value)}
-              />
-              <button onClick={changePassword}>Change Password</button>
-              {securityMsg && <div className="settings-message">{securityMsg}</div>}
-            </section>
-          )}
+            </div>
+          </section>
+        )}
 
-          {activeTab === 'Notifications' && (
-            <section className="settings-card">
-              <h2>Email Notifications</h2>
-              <div className="toggle-row">
-                <span>Job Alerts</span>
-                <input
-                  type="checkbox"
-                  checked={jobAlerts}
-                  onChange={e => toggleNotification('jobAlerts', e.target.checked)}
-                />
-              </div>
-              <div className="toggle-row">
-                <span>Weekly Summary</span>
-                <input
-                  type="checkbox"
-                  checked={weeklySummary}
-                  onChange={e => toggleNotification('weeklySummary', e.target.checked)}
-                />
-              </div>
-            </section>
-          )}
+        {activeTab === 'Preferences' && (
+          <section className="settings-card">
+            <h2>App Preferences</h2>
+            <label>Language</label>
+            <select
+              value={language}
+              onChange={e => setLanguage(e.target.value)}
+            >
+              <option value="en">English</option>
+              <option value="es">Español</option>
+              <option value="fr">Français</option>
+            </select>
 
-          {activeTab === 'Preferences' && (
-            <section className="settings-card">
-              <h2>App Preferences</h2>
-              <label>Language</label>
-              <select
-                value={language}
-                onChange={e => setLanguage(e.target.value)}
-              >
-                <option value="en">English</option>
-                <option value="es">Español</option>
-                <option value="fr">Français</option>
-              </select>
+            <label>Country</label>
+            <select
+              value={country}
+              onChange={e => setCountry(e.target.value)}
+            >
+              <option value="gb">United Kingdom</option>
+              <option value="us">United States</option>
+              <option value="ca">Canada</option>
+            </select>
 
-              <label>Country</label>
-              <select
-                value={country}
-                onChange={e => setCountry(e.target.value)}
-              >
-                <option value="gb">United Kingdom</option>
-                <option value="us">United States</option>
-                <option value="ca">Canada</option>
-              </select>
+            <button onClick={savePreferences}>Save Preferences</button>
+            {prefMsg && <div className="settings-message">{prefMsg}</div>}
+          </section>
+        )}
 
-              <button onClick={savePreferences}>Save Preferences</button>
-              {prefMsg && <div className="settings-message">{prefMsg}</div>}
-            </section>
-          )}
-
-          {activeTab === 'Privacy' && (
-            <section className="settings-card">
-              <h2>Privacy & Data</h2>
-              <button className="danger" onClick={handleDeleteAccount}>
-                Delete My Account
-              </button>
-              {deleteMsg && <div className="settings-message">{deleteMsg}</div>}
-            </section>
-          )}
-        </main>
-      </div>
-    </>
+        {activeTab === 'Privacy' && (
+          <section className="settings-card">
+            <h2>Privacy & Data</h2>
+            <button className="danger" onClick={handleDeleteAccount}>
+              Delete My Account
+            </button>
+            {deleteMsg && <div className="settings-message">{deleteMsg}</div>}
+          </section>
+        )}
+      </main>
+    </div>
   );
 }
