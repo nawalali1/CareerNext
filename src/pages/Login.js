@@ -5,17 +5,16 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import './Login.css';
 
 export default function Login() {
-  const [email, setEmail]       = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError]       = useState('');
-  const navigate                = useNavigate();
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      // After login, send them to the quiz
       navigate('/questionnaire');
     } catch (err) {
       setError(err.message);

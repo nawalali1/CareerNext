@@ -2,7 +2,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
-import './Responsive.css';    // ← full responsive overrides
+import './Responsive.css'; // Full responsive overrides
 import App from './App';
 
 // Initialize Firebase (auth, analytics, etc.)

@@ -21,7 +21,6 @@ const TABS = [
 export default function Settings() {
   const user = auth.currentUser;
 
-  // Tab state
   const [activeTab, setActiveTab] = useState('Profile');
 
   // PROFILE
@@ -39,13 +38,12 @@ export default function Settings() {
 
   // PREFERENCES
   const [language, setLanguage] = useState('en');
-  const [country, setCountry]   = useState('gb');
-  const [prefMsg, setPrefMsg]   = useState('');
+  const [country, setCountry] = useState('gb');
+  const [prefMsg, setPrefMsg] = useState('');
 
   // PRIVACY
   const [deleteMsg, setDeleteMsg] = useState('');
 
-  // Load persisted prefs
   useEffect(() => {
     setJobAlerts(JSON.parse(localStorage.getItem('jobAlerts')) || false);
     setWeeklySummary(JSON.parse(localStorage.getItem('weeklySummary')) || false);
@@ -53,7 +51,6 @@ export default function Settings() {
     setCountry(localStorage.getItem('country') || 'gb');
   }, []);
 
-  // Handlers
   const saveProfile = async () => {
     setProfileMsg('');
     try {

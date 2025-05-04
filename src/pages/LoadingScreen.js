@@ -9,7 +9,12 @@ const LoadingScreen = () => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      navigate('/results', { state: { answers: location.state?.answers, userType: location.state?.userType } });
+      navigate('/results', {
+        state: {
+          answers: location.state?.answers,
+          userType: location.state?.userType,
+        },
+      });
     }, 3000); // 3 seconds loading
 
     return () => clearTimeout(timer);

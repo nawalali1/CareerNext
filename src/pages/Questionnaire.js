@@ -12,7 +12,7 @@ const questions = [
       'Designing user experiences',
       'Analyzing large datasets',
       'Leading and motivating teams',
-      'Crafting stories and content'
+      'Crafting stories and content',
     ],
   },
   {
@@ -23,7 +23,7 @@ const questions = [
       'Improve everyday lives',
       'Shape business strategy',
       'Advance academic research',
-      'Inspire and educate others'
+      'Inspire and educate others',
     ],
   },
   {
@@ -34,7 +34,7 @@ const questions = [
       'Structured with clear goals',
       'A blend of routine and spontaneity',
       'Team-focused collaborative sessions',
-      'Deep-focus solo time'
+      'Deep-focus solo time',
     ],
   },
   {
@@ -45,7 +45,7 @@ const questions = [
       'Creative & design (visual, UX)',
       'Interpersonal & communication',
       'Strategic & management',
-      'Research & critical thinking'
+      'Research & critical thinking',
     ],
   },
   {
@@ -56,7 +56,7 @@ const questions = [
       'Work–life balance',
       'High earning potential',
       'Social good / sustainability',
-      'Continuous learning'
+      'Continuous learning',
     ],
   },
   {
@@ -67,7 +67,7 @@ const questions = [
       'Healthcare & Biotech',
       'FinTech & Blockchain',
       'Creative Media & Entertainment',
-      'Renewable Energy'
+      'Renewable Energy',
     ],
   },
   {
@@ -78,7 +78,7 @@ const questions = [
       '£30K–£50K',
       '£50K–£70K',
       '£70K–£100K',
-      'Over £100K'
+      'Over £100K',
     ],
   },
 ];
@@ -111,6 +111,7 @@ const Questionnaire = () => {
       navigate('/loading', { state: { answers, userType } });
     }
   };
+
   const back = () => qIndex > 0 && setQIndex(qIndex - 1);
 
   const currentAnswer = answers[qIndex];
@@ -156,4 +157,3 @@ const Questionnaire = () => {
 };
 
 export default Questionnaire;
-
