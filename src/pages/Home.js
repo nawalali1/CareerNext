@@ -1,56 +1,39 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import Navbar from '../components/Navbar';
 import './Home.css';
 
-function Home() {
+const Home = () => {
+  const navigate = useNavigate();
+
+  const handleStart = (userType) => {
+    navigate('/questionnaire', { state: { userType } });
+  };
+
   return (
-    <div className="container">
-      <div className="hero-text">
-        <h1>Your Career, Your Way</h1>
-        <p>
-          CareerNext helps you discover the best path forward—whether you're starting out, graduating soon, or
-          looking to reinvent your professional journey.
-        </p>
-      </div>
+    <>
+      <Navbar />
+      <div className="hero-wrapper">
+        <div className="hero-overlay">
+          <div className="hero-center">
+            <h1 className="hero-title">Find Your Path Forward</h1>
+            <p className="hero-subtext">
+              For students, graduates, and professionals seeking clarity in the job market.
+            </p>
 
-      <div className="cta-buttons">
-        <div className="cta-group">
-          <Link to="/questionnaire">
-            <button>Current Students</button>
-          </Link>
-          <Link to="/degree-to-career">
-            <button className="secondary-button">Explore Careers by Degree</button>
-          </Link>
-        </div>
-
-        <div className="cta-group">
-          <Link to="/questionnaire">
-            <button>Recent Graduates</button>
-          </Link>
-          <Link to="/degree-to-career">
-            <button className="secondary-button">Map My Degree to Jobs</button>
-          </Link>
-        </div>
-
-        <div className="cta-group">
-          <Link to="/questionnaire">
-            <button>Career Switchers</button>
-          </Link>
+            <div className="hero-buttons">
+              <button onClick={() => handleStart('student')}>I'm a Student</button>
+              <button onClick={() => handleStart('graduate')}>I'm a Graduate</button>
+              <button onClick={() => handleStart('jobseeker')}>
+                Job Seeker / Career Changer
+              </button>
+            </div>
+          </div>
         </div>
       </div>
-
-      <div className="audience-section employers">
-        <h2>For Employers & Recruiters</h2>
-        <p>
-          Discover top talent by posting your open positions. Our intelligent match-making system connects your
-          company with the right candidates, faster.
-        </p>
-        <Link to="/login">
-          <button>Post a Job</button>
-        </Link>
-      </div>
-    </div>
+    </>
   );
-}
+};
 
 export default Home;
+

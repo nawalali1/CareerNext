@@ -1,3 +1,4 @@
+// src/pages/Settings.js
 import React, { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import { auth } from '../firebase';
@@ -10,13 +11,7 @@ import {
 } from 'firebase/auth';
 import './Settings.css';
 
-const TABS = [
-  'Profile',
-  'Security',
-  'Notifications',
-  'Preferences',
-  'Privacy'
-];
+const TABS = ['Profile','Security','Notifications','Preferences','Privacy'];
 
 export default function Settings() {
   const user = auth.currentUser;
@@ -45,7 +40,7 @@ export default function Settings() {
   // PRIVACY
   const [deleteMsg, setDeleteMsg] = useState('');
 
-  // Load persisted prefs
+  // Load prefs once
   useEffect(() => {
     setJobAlerts(JSON.parse(localStorage.getItem('jobAlerts')) || false);
     setWeeklySummary(JSON.parse(localStorage.getItem('weeklySummary')) || false);

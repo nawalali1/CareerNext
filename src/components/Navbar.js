@@ -1,45 +1,54 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { getAuth, signOut } from 'firebase/auth';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { signOut } from 'firebase/auth';
+import { auth } from '../firebase';
 import './Navbar.css';
 
-function Navbar({ user }) {
+const Navbar = () => {
+  const location = useLocation();
   const navigate = useNavigate();
-  const auth = getAuth();
+  const currentUser = auth.currentUser;
 
-  const handleLogout = () => {
-    signOut(auth)
-      .then(() => {
-        navigate('/login');
-      })
-      .catch((error) => {
-        console.error('Logout error:', error);
-      });
+  const handleLogout = async () => {
+    await signOut(auth);
+    navigate('/login', { replace: true });
   };
 
   return (
     <nav className="navbar">
-      <h2>CareerNext</h2>
-      <ul>
-        <li><Link to="/">Home</Link></li>
-        {!user && (
-          <>
-            <li><Link to="/signup">Sign Up</Link></li>
-            <li><Link to="/login">Login</Link></li>
-          </>
+      <div className="logo">
+        <span className="icon">⟶</span>
+        <span>CareerNext</span>
+      </div>
+      <ul className="nav-links">
+        <li className={location.pathname === '/' ? 'active' : ''}>
+          <Link to="/">Home</Link>
+        </li>
+        <li className={location.pathname === '/jobs' ? 'active' : ''}>
+          <Link to="/jobs">Live Jobs</Link>
+        </li>
+        <li className={location.pathname === '/cvbuilder' ? 'active' : ''}>
+          <Link to="/cvbuilder">CV Builder</Link>
+        </li>
+        {currentUser && (
+          <li className={location.pathname === '/settings' ? 'active' : ''}>
+            <Link to="/settings">Settings</Link>
+          </li>
         )}
-        {user && (
-          <>
-            <li><Link to="/questionnaire">Quiz</Link></li>
-            <li><Link to="/results">Results</Link></li>
-            <li><Link to="/cv-builder">Build CV</Link></li> {/* ✅ Added link */}
-            <li style={{ color: '#3f51b5', fontWeight: '500' }}>{user.email}</li>
-            <li><button onClick={handleLogout} className="logout-button">Logout</button></li>
-          </>
+        {currentUser ? (
+          <li>
+            <button className="nav-button" onClick={handleLogout}>
+              Logout
+            </button>
+          </li>
+        ) : (
+          <li className={location.pathname === '/login' ? 'active' : ''}>
+            <Link to="/login">Login</Link>
+          </li>
         )}
       </ul>
     </nav>
   );
-}
+};
 
 export default Navbar;

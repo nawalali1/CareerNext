@@ -1,67 +1,40 @@
-import './firebase';
-import './App.css';
-import Navbar from './components/Navbar';
-
+// src/App.js
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import { onAuthStateChanged, getAuth } from 'firebase/auth';
 
-// Pages
 import Home from './pages/Home';
 import Questionnaire from './pages/Questionnaire';
+import LoadingScreen from './pages/LoadingScreen';
 import Results from './pages/Results';
+import Jobs from './pages/Jobs';
+import CVBuilder from './pages/CVBuilder';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
-import LoadingScreen from './pages/LoadingScreen';
-import CVBuilder from './pages/CVBuilder';
-import Jobs from './pages/Jobs';
-import DegreeToCareer from './pages/DegreeToCareer';
-import Students from './pages/Students'; // ✅ NEW IMPORT
-
-// Route protection
-import PrivateRoute from './components/PrivateRoute';
+import Settings from './pages/Settings';
 
 function App() {
-  const [user, setUser] = useState(undefined);
-
-  useEffect(() => {
-    const auth = getAuth();
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-    });
-    return () => unsubscribe();
-  }, []);
-
   return (
     <Router>
-      <div className="App">
-        <Navbar user={user} />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/loading" element={<LoadingScreen />} />
+      <Routes>
+        {/* Public */}
+        <Route path="/" element={<Home />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/login" element={<Login />} />
 
-          {/* Private routes */}
-          <Route
-            path="/cv-builder"
-            element={<PrivateRoute user={user} element={<CVBuilder />} />}
-          />
-          <Route
-            path="/questionnaire"
-            element={<PrivateRoute user={user} element={<Questionnaire />} />}
-          />
-          <Route
-            path="/results"
-            element={<PrivateRoute user={user} element={<Results />} />}
-          />
+        {/* Quiz flow */}
+        <Route path="/questionnaire" element={<Questionnaire />} />
+        <Route path="/loading" element={<LoadingScreen />} />
+        <Route path="/results" element={<Results />} />
 
-          {/* Public routes */}
-          <Route path="/jobs" element={<Jobs />} />
-          <Route path="/degree-to-career" element={<DegreeToCareer />} />
-          <Route path="/students" element={<Students />} /> {/* ✅ NEW ROUTE */}
-        </Routes>
-      </div>
+        {/* Live Jobs */}
+        <Route path="/jobs" element={<Jobs />} />
+
+        {/* CV Builder */}
+        <Route path="/cvbuilder" element={<CVBuilder />} />
+
+        {/* SETTINGS – no auth guard */}
+        <Route path="/settings" element={<Settings />} />
+      </Routes>
     </Router>
   );
 }

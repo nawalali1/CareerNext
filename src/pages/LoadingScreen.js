@@ -1,27 +1,32 @@
 import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import Navbar from '../components/Navbar';
 import './LoadingScreen.css';
 
-function LoadingScreen() {
+const LoadingScreen = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      navigate('/results', { state: { answers: location.state.answers } });
-    }, 2500); // 2.5 seconds
+      navigate('/results', { state: { answers: location.state?.answers, userType: location.state?.userType } });
+    }, 3000); // 3 seconds loading
 
     return () => clearTimeout(timer);
-  }, [navigate, location]);
+  }, [navigate, location.state]);
 
   return (
-    <div className="loading-screen">
-      <div className="loading-box">
-        <h2>Analyzing your responses...</h2>
-        <div className="loader"></div>
+    <>
+      <Navbar />
+      <div className="loading-container">
+        <div className="loading-card">
+          <div className="spinner"></div>
+          <h2>Preparing your results...</h2>
+          <p>We are analyzing your answers to match you with the best career paths!</p>
+        </div>
       </div>
-    </div>
+    </>
   );
-}
+};
 
 export default LoadingScreen;

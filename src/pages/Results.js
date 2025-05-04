@@ -1,94 +1,102 @@
-import React from 'react';
-import { useLocation, useNavigate, Link } from 'react-router-dom';
+import React, { useMemo } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import Navbar from '../components/Navbar';
 import './Results.css';
 
-function Results() {
-  const location = useLocation();
+export default function Results() {
+  const { state } = useLocation();
+  const { answers = [], userType = '' } = state || {};
   const navigate = useNavigate();
-  const answers = location.state?.answers;
 
-  if (!answers || answers.length === 0) {
-    return (
-      <div className="results-container fade-in">
-        <div className="no-results-card">
-          <h2> No Results Yet</h2>
-          <p>
-            You haven’t completed the questionnaire yet. Answer a few quick questions
-            to discover your ideal career path — powered by AI.
-          </p>
-          <button className="primary-button" onClick={() => navigate('/questionnaire')}>
-            Take the Career Quiz
-          </button>
-        </div>
-      </div>
-    );
-  }
+  // Generate career suggestions based on a key answer
+  const suggestions = useMemo(() => {
+    if (answers.length === 0) return [];
 
-  const categoryScores = {
-    tech: 0,
-    design: 0,
-    people: 0,
-    business: 0,
-  };
+    const skillAnswer = answers[3]; // Q4: Which skill set best describes you?
+    let list = [];
 
-  const keywordMap = {
-    tech: ["problem", "logic", "technical", "analytical"],
-    design: ["visual", "creative", "design", "expressive", "communication"],
-    people: ["helping", "supportive", "empathetic", "people"],
-    business: ["organizing", "structure", "goal", "strategy"],
-  };
+    switch (true) {
+      case skillAnswer.includes('Technical'):
+        list = [
+          'Quantum Computing Researcher',
+          'DevOps Reliability Engineer',
+          'AI Ethicist',
+          'Blockchain Solutions Architect'
+        ];
+        break;
+      case skillAnswer.includes('Creative'):
+        list = [
+          'UX Researcher',
+          '3D Animator',
+          'Creative Technologist',
+          'Voice Interface Designer'
+        ];
+        break;
+      case skillAnswer.includes('Interpersonal'):
+        list = [
+          'Customer Success Manager',
+          'Corporate Trainer',
+          'Community Outreach Coordinator',
+          'Employee Engagement Specialist'
+        ];
+        break;
+      case skillAnswer.includes('Strategic'):
+        list = [
+          'Business Intelligence Analyst',
+          'Corporate Strategy Consultant',
+          'Product Manager',
+          'Innovation Consultant'
+        ];
+        break;
+      case skillAnswer.includes('Research'):
+        list = [
+          'Policy Analyst',
+          'Data Visualization Specialist',
+          'UX Researcher',
+          'Academic Research Coordinator'
+        ];
+        break;
+      default:
+        list = [
+          'Project Coordinator',
+          'Operations Analyst',
+          'Talent Acquisition Specialist',
+          'Digital Transformation Lead'
+        ];
+    }
 
-  answers.forEach((answer) => {
-    const lower = answer.toLowerCase();
-    Object.entries(keywordMap).forEach(([category, keywords]) => {
-      if (keywords.some((word) => lower.includes(word))) {
-        categoryScores[category]++;
-      }
-    });
-  });
-
-  const topCategory = Object.entries(categoryScores).reduce((a, b) =>
-    b[1] > a[1] ? b : a
-  )[0];
-
-  const careerMap = {
-    tech: {
-      title: "Software Engineer",
-      description: "You’re logical, analytical, and thrive on solving technical problems. A Software Engineering career could be your perfect match.",
-    },
-    design: {
-      title: "UX/UI Designer",
-      description: "Your creativity and eye for detail make you ideal for crafting intuitive and visually appealing digital experiences.",
-    },
-    people: {
-      title: "Human Resources Specialist",
-      description: "You're empathetic, supportive, and people-driven. A role in Human Resources will let you make a meaningful difference.",
-    },
-    business: {
-      title: "Business Analyst",
-      description: "You’re structured, strategic, and goal-oriented. A career in Business Analysis fits your problem-solving mindset.",
-    },
-  };
-
-  const career = careerMap[topCategory];
+    return list;
+  }, [answers]);
 
   return (
-    <div className="results-container fade-in">
-      <h2 className="results-title">🎯 Your Recommended Career</h2>
-      <div className="career-highlight-card">
-        <h3>{career.title}</h3>
-        <p>{career.description}</p>
-        <div className="results-buttons">
-          <Link to={`/jobs?role=${encodeURIComponent(career.title)}`}>
-            <button className="primary-button">View Live Job Postings</button>
-          </Link>
-          <button className="secondary-button" onClick={() => navigate('/questionnaire')}>
-            Retake Quiz
-          </button>
+    <>
+      <Navbar />
+      <div className="results-container">
+        <h2>Your Top Career Matches</h2>
+        <div className="results-grid">
+          {suggestions.map((title, idx) => (
+            <div key={idx} className="career-card">
+              <h3>{title}</h3>
+              <p>
+                A role that aligns with your skills in “{answers[3] || '—'}”
+                and your preferences as a {userType || 'participant'}.
+              </p>
+              <div className="career-buttons">
+                <button
+                  onClick={() =>
+                    navigate('/jobs', { state: { answers, userType } })
+                  }
+                >
+                  View Live Jobs
+                </button>
+                <button onClick={() => navigate('/cvbuilder')}>
+                  Build My CV
+                </button>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
-    </div>
+    </>
   );
 }
-
-export default Results;

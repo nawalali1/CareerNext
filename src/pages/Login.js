@@ -1,20 +1,21 @@
 import React, { useState } from 'react';
-import { signInWithEmailAndPassword, getAuth } from 'firebase/auth';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { auth } from '../firebase';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 import './Login.css';
 
-function Login() {
-  const [email, setEmail] = useState('');
+export default function Login() {
+  const [email, setEmail]       = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const navigate = useNavigate();
-  const auth = getAuth();
+  const [error, setError]       = useState('');
+  const navigate                = useNavigate();
 
-  const handleLogin = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     try {
       await signInWithEmailAndPassword(auth, email, password);
+      // After login, send them to the quiz
       navigate('/questionnaire');
     } catch (err) {
       setError(err.message);
@@ -24,29 +25,30 @@ function Login() {
   return (
     <div className="login-container">
       <div className="login-card">
-        <h1>Welcome Back</h1>
-        <p className="login-subtext">Log in to continue your CareerNext journey.</p>
-        <form onSubmit={handleLogin}>
+        <h1>Login to CareerNext</h1>
+        <p className="login-subtext">Welcome back! Please enter your credentials.</p>
+        <form onSubmit={handleSubmit}>
           <input
             type="email"
-            placeholder="Email address"
+            placeholder="Email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={e => setEmail(e.target.value)}
             required
           />
           <input
             type="password"
-            placeholder="Your password"
+            placeholder="Password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={e => setPassword(e.target.value)}
             required
           />
           <button type="submit">Login</button>
+          {error && <div className="login-error">{error}</div>}
         </form>
-        {error && <p className="login-error">{error}</p>}
+        <p>
+          Don’t have an account? <Link to="/signup">Sign up here</Link>
+        </p>
       </div>
     </div>
   );
 }
-
-export default Login;

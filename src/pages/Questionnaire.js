@@ -1,115 +1,159 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import Navbar from '../components/Navbar';
 import './Questionnaire.css';
 
 const questions = [
   {
-    question: "Which activity energizes you the most?",
+    id: 1,
+    text: 'Which activity energizes you most?',
     options: [
-      "Solving complex problems",
-      "Expressing ideas visually or verbally",
-      "Helping others achieve their goals",
-      "Organizing systems or processes",
+      'Solving complex logical puzzles',
+      'Designing user experiences',
+      'Analyzing large datasets',
+      'Leading and motivating teams',
+      'Crafting stories and content'
     ],
   },
   {
-    question: "What environment helps you perform at your best?",
+    id: 2,
+    text: 'What impact do you want your work to have?',
     options: [
-      "Fast-paced and competitive",
-      "Supportive and collaborative",
-      "Structured and goal-oriented",
-      "Flexible and creative",
+      'Drive technological innovation',
+      'Improve everyday lives',
+      'Shape business strategy',
+      'Advance academic research',
+      'Inspire and educate others'
     ],
   },
   {
-    question: "When learning something new, what do you care about most?",
+    id: 3,
+    text: 'How do you like to structure your day?',
     options: [
-      "Understanding how it works logically",
-      "Applying it to real-life situations",
-      "Exploring it creatively",
-      "Sharing or teaching it to others",
+      'Highly flexible, set my own rhythm',
+      'Structured with clear goals',
+      'A blend of routine and spontaneity',
+      'Team-focused collaborative sessions',
+      'Deep-focus solo time'
     ],
   },
   {
-    question: "How do people typically describe you?",
+    id: 4,
+    text: 'Which skill set best describes you?',
     options: [
-      "Analytical and precise",
-      "Creative and expressive",
-      "Empathetic and supportive",
-      "Reliable and organized",
+      'Technical & analytical (coding, math)',
+      'Creative & design (visual, UX)',
+      'Interpersonal & communication',
+      'Strategic & management',
+      'Research & critical thinking'
     ],
   },
   {
-    question: "Which of these motivates you most?",
+    id: 5,
+    text: 'In your ideal job, what’s most important?',
     options: [
-      "Solving high-impact problems",
-      "Communicating effectively",
-      "Working closely with others",
-      "Achieving clear goals",
+      'Rapid career advancement',
+      'Work–life balance',
+      'High earning potential',
+      'Social good / sustainability',
+      'Continuous learning'
     ],
   },
   {
-    question: "What kind of challenges are you drawn to?",
+    id: 6,
+    text: 'Which industry excites you most?',
     options: [
-      "Technical challenges",
-      "Design & communication challenges",
-      "People-centered challenges",
-      "Business or strategic challenges",
+      'AI & Robotics',
+      'Healthcare & Biotech',
+      'FinTech & Blockchain',
+      'Creative Media & Entertainment',
+      'Renewable Energy'
+    ],
+  },
+  {
+    id: 7,
+    text: 'What is your desired salary range?',
+    options: [
+      'Under £30K',
+      '£30K–£50K',
+      '£50K–£70K',
+      '£70K–£100K',
+      'Over £100K'
     ],
   },
 ];
 
-function Questionnaire() {
+const Questionnaire = () => {
+  const location = useLocation();
   const navigate = useNavigate();
-  const [current, setCurrent] = useState(0);
-  const [answers, setAnswers] = useState([]);
+  const [userType, setUserType] = useState('');
+  const [answers, setAnswers] = useState(Array(questions.length).fill(null));
+  const [qIndex, setQIndex] = useState(0);
 
-  const handleNext = () => {
-    if (answers[current]) {
-      if (current < questions.length - 1) {
-        setCurrent(current + 1);
-      } else {
-        navigate('/loading', { state: { answers } });
-      }
+  useEffect(() => {
+    if (location.state?.userType) {
+      setUserType(location.state.userType);
+    } else {
+      navigate('/');
+    }
+  }, [location.state, navigate]);
+
+  const selectOption = (opt) => {
+    const updated = [...answers];
+    updated[qIndex] = opt;
+    setAnswers(updated);
+  };
+
+  const next = () => {
+    if (qIndex < questions.length - 1) {
+      setQIndex(qIndex + 1);
+    } else {
+      navigate('/loading', { state: { answers, userType } });
     }
   };
+  const back = () => qIndex > 0 && setQIndex(qIndex - 1);
 
-  const handleBack = () => {
-    if (current > 0) setCurrent(current - 1);
-  };
-
-  const handleSelect = (option) => {
-    const newAnswers = [...answers];
-    newAnswers[current] = option;
-    setAnswers(newAnswers);
-  };
+  const currentAnswer = answers[qIndex];
 
   return (
-    <div className="questionnaire-container">
-      <div className="progress">Question {current + 1} of {questions.length}</div>
-      <h2>{questions[current].question}</h2>
-      <div className="options">
-        {questions[current].options.map((option, index) => (
-          <label key={index} className={`option ${answers[current] === option ? 'selected' : ''}`}>
-            <input
-              type="radio"
-              name={`question-${current}`}
-              value={option}
-              checked={answers[current] === option}
-              onChange={() => handleSelect(option)}
-            />
-            {option}
-          </label>
-        ))}
+    <>
+      <Navbar />
+      <div className="questionnaire-wrapper">
+        <div className="questionnaire-card">
+          <h2>
+            Deep Dive Quiz
+            {userType && ` for ${userType.charAt(0).toUpperCase() + userType.slice(1)}`}
+          </h2>
+          <div className="progress">
+            {qIndex + 1} / {questions.length}
+          </div>
+          <div className="question">{questions[qIndex].text}</div>
+
+          <div className="options">
+            {questions[qIndex].options.map((opt) => (
+              <div
+                key={opt}
+                className={`option ${currentAnswer === opt ? 'selected' : ''}`}
+                onClick={() => selectOption(opt)}
+              >
+                <label>{opt}</label>
+              </div>
+            ))}
+          </div>
+
+          <div className="navigation-buttons">
+            <button onClick={back} disabled={qIndex === 0}>
+              Back
+            </button>
+            <button onClick={next} disabled={!currentAnswer}>
+              {qIndex === questions.length - 1 ? 'See Results' : 'Next'}
+            </button>
+          </div>
+        </div>
       </div>
-      <div className="navigation-buttons">
-        <button onClick={handleBack} disabled={current === 0}>Back</button>
-        <button onClick={handleNext}>{current === questions.length - 1 ? 'Submit' : 'Next'}</button>
-      </div>
-    </div>
+    </>
   );
-}
+};
 
 export default Questionnaire;
 
-  
